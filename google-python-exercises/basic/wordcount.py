@@ -38,12 +38,47 @@ print_words() and print_top().
 """
 
 import sys
+from string import maketrans
+from collections import Counter
 
 # +++your code here+++
 # Define print_words(filename) and print_top(filename) functions.
 # You could write a helper utility function that reads a file
 # and builds and returns a word/count dict for it.
 # Then print_words() and print_top() can just call the utility function.
+
+def read_file(file):
+  f = open(file, 'rU')
+  wordcount = {}
+  for line in f:
+    line = line.translate(None, '\'`\\,.?!":;()_@[]{}#$%^&*<>~/')
+    words = line.strip().lower().split()
+    for word in words:
+      if word in wordcount:
+        wordcount[word] += 1
+      else:
+        wordcount[word] = 1
+  f.close()
+  return wordcount
+
+def print_words(file):
+  def sort_by_word(wordcount):
+    return wordcount[0]
+  wordcounts = read_file(file)
+  for word,count in sorted(wordcounts.items(),key = sort_by_word):
+    print word + ' ' + str(count)
+  return
+
+def print_top(file):
+  def sort_by_word(wordcount):
+    return wordcount[0]
+  wordcounts = read_file(file)
+  for word,count in sorted(wordcounts.items(),key = sort_by_word):
+    with open(file) as input_file:
+      count = Counter(word for line in input_file
+      for word in line.split())
+  print(count.most_common(20))
+  return
 
 ###
 
